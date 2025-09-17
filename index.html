@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website Coming Soon</title>
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body, html {
+            height: 100%;
+            font-family: Arial, sans-serif;
+            color: white;
+        }
+
+        /* Banner Styling */
+        .banner {
+            position: relative;
+            height: 100vh;
+            background-image: url('background.jpg'); /* Add your image path here */
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Overlay */
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5); /* Semi-transparent overlay */
+        }
+
+        /* Banner Text */
+        .content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+
+        .content h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+
+        /* Learn More Button */
+        #learn-more-btn {
+            background-color: #4CAF50;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        #learn-more-btn:hover {
+            background-color: #45a049;
+        }
+
+        /* Hidden Info Section */
+        #more-info {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            background-color: #333;
+            margin-top: 20px;
+        }
+
+        #more-info h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        #more-info p {
+            font-size: 1.2em;
+            line-height: 1.5;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .content h1 {
+                font-size: 2.5em;
+            }
+
+            #learn-more-btn {
+                padding: 10px 20px;
+                font-size: 1em;
+            }
+
+            #more-info h2 {
+                font-size: 2em;
+            }
+
+            #more-info p {
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Banner Section -->
+    <div class="banner">
+        <div class="overlay"></div>
+        <div class="content">
+            <h1>Website Coming Soon</h1>
+            <button id="learn-more-btn">Learn More</button>
+        </div>
+    </div>
+
+    <!-- Hidden Info Section -->
+    <div id="more-info">
+        <h2>About Our AI App</h2>
+        <p>
+            Our AI app is designed to help control the Lantern Fly population. Using YOLO-trained weights, 
+            the app tracks the flies in real-time and utilizes cutting-edge technology to target and disintegrate 
+            them with a laser. This app offers an innovative approach to controlling this invasive species, 
+            using artificial intelligence for fast, precise pest control.
+        </p>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        document.getElementById('learn-more-btn').addEventListener('click', function() {
+            // Toggle the visibility of the hidden info section
+            const moreInfo = document.getElementById('more-info');
+            moreInfo.style.display = moreInfo.style.display === 'block' ? 'none' : 'block';
+        });
+    </script>
+
+</body>
+</html>
