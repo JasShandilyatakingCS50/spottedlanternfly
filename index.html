@@ -3,139 +3,310 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Website Coming Soon</title>
+    <title>AI-Powered Lantern Fly Control</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Merriweather:wght@400&display=swap" rel="stylesheet">
     <style>
-        /* General Reset */
-        * {
+        /* Global Styles */
+        body {
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-        }
-        body, html {
-            height: 100%;
-            font-family: Arial, sans-serif;
-            color: white;
+            font-family: 'Merriweather', serif;
+            color: #333;
+            background-color: #f9f9f9;
+            scroll-behavior: smooth;
         }
 
-        /* Banner Styling */
-        .banner {
+        h1, h2, h3 {
+            font-family: 'Poppins', sans-serif;
+            color: #007bff; /* Blue tone */
+        }
+
+        a {
+            text-decoration: none;
+            color: #28a745; /* Green tone */
+        }
+
+        /* Header Section */
+        header {
             position: relative;
             height: 100vh;
-            background-image: url('background.png'); /* Add your image path here */
-            background-size: cover;
-            background-position: center;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
+            text-align: center;
+            color: white;
+            overflow: hidden;
         }
 
-        /* Overlay */
-        .overlay {
+        header::before {
+            content: "";
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5); /* Semi-transparent overlay */
+            background: url(/background.png) no-repeat center center/cover;
+            z-index: -1;
+            filter: brightness(0.8);
         }
 
-        /* Banner Text */
-        .content {
-            position: relative;
-            z-index: 2;
-            text-align: center;
+        .logo {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 50px;
+            height: 50px;
         }
 
-        .content h1 {
+        .hero-text {
+            max-width: 800px;
+            padding: 0 20px;
+        }
+
+        .hero-text h1 {
             font-size: 3em;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
 
-        /* Learn More Button */
-        #learn-more-btn {
-            background-color: #4CAF50;
-            border: none;
+        .hero-text p {
+            font-size: 1.5em;
+            margin-bottom: 30px;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+
+        .learn-more {
+            background-color: #28a745;
+            color: white;
             padding: 15px 30px;
-            font-size: 1.2em;
-            cursor: pointer;
             border-radius: 5px;
+            font-size: 1.2em;
             transition: background-color 0.3s ease;
         }
 
-        #learn-more-btn:hover {
-            background-color: #45a049;
+        .learn-more:hover {
+            background-color: #218838;
         }
 
-        /* Hidden Info Section */
-        #more-info {
-            display: none;
-            text-align: center;
-            padding: 20px;
-            background-color: #333;
-            margin-top: 20px;
+        /* Main Content */
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
         }
 
-        #more-info h2 {
+        section {
+            margin-bottom: 60px;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        section h2 {
             font-size: 2.5em;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+
+        section p {
+            font-size: 1.1em;
+            line-height: 1.8;
             margin-bottom: 20px;
         }
 
-        #more-info p {
-            font-size: 1.2em;
-            line-height: 1.5;
+        .features-list, .steps-list, .benefits-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .features-list li, .steps-list li, .benefits-list li {
+            margin-bottom: 20px;
+            padding-left: 30px;
+            position: relative;
+        }
+
+        .features-list li::before, .steps-list li::before, .benefits-list li::before {
+            content: "•";
+            color: #28a745;
+            position: absolute;
+            left: 0;
+            font-size: 1.5em;
+        }
+
+        /* Parallax Effect */
+        .parallax {
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            height: 400px;
+            margin: 40px 0;
+        }
+
+        .parallax1 {
+            background-image: url('https://via.placeholder.com/1200x400?text=AI+Tracking+System');
+        }
+
+        .parallax2 {
+            background-image: url('https://via.placeholder.com/1200x400?text=Laser+Action');
+        }
+
+        .parallax3 {
+            background-image: url('https://via.placeholder.com/1200x400?text=Lantern+Fly+Neutralized');
+        }
+
+        /* Footer */
+        footer {
+            background-color: #007bff;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: sticky;
+            bottom: 0;
+            width: 100%;
+        }
+
+        footer a {
+            color: white;
+            margin: 0 10px;
+        }
+
+        footer .newsletter {
+            margin-top: 10px;
         }
 
         /* Mobile Responsiveness */
         @media (max-width: 768px) {
-            .content h1 {
-                font-size: 2.5em;
-            }
-
-            #learn-more-btn {
-                padding: 10px 20px;
-                font-size: 1em;
-            }
-
-            #more-info h2 {
+            .hero-text h1 {
                 font-size: 2em;
             }
 
-            #more-info p {
-                font-size: 1em;
+            .hero-text p {
+                font-size: 1.2em;
+            }
+
+            section h2 {
+                font-size: 2em;
+            }
+
+            .parallax {
+                background-attachment: scroll; /* Parallax can be glitchy on mobile */
             }
         }
     </style>
 </head>
 <body>
-
-    <!-- Banner Section -->
-    <div class="banner">
-        <div class="overlay"></div>
-        <div class="content">
-            <h1>Website Coming Soon</h1>
-            <button id="learn-more-btn">Learn More</button>
+    <header>
+        <svg class="logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <!-- Simple SVG logo: Abstract fly or AI brain -->
+            <circle cx="50" cy="50" r="40" fill="#28a745" />
+            <path d="M30 50 Q50 30 70 50 Q50 70 30 50" fill="none" stroke="white" stroke-width="5"/>
+            <circle cx="40" cy="40" r="5" fill="white"/>
+            <circle cx="60" cy="40" r="5" fill="white"/>
+        </svg>
+        <div class="hero-text">
+            <h1>AI-Powered Lantern Fly Control</h1>
+            <p>Leveraging advanced technology to tackle invasive species with precision and efficiency.</p>
+            <a href="#introduction" class="learn-more">Learn More</a>
         </div>
-    </div>
+    </header>
 
-    <!-- Hidden Info Section -->
-    <div id="more-info">
-        <h2>About Our AI App</h2>
+    <main>
+        <section id="introduction">
+            <h2>Introduction</h2>
+            <p>Our AI app revolutionizes the way we combat the invasive Lantern Fly species. Using real-time image recognition and laser targeting powered by cutting-edge YOLO-trained models, the app automatically identifies, tracks, and neutralizes Lantern Flies with pinpoint accuracy. It’s a modern solution to an age-old problem, using technology to restore balance in our environment.</p>
+        </section>
+
+        <div class="parallax parallax1"></div>
+
+        <section id="features">
+            <h2>Features</h2>
+            <ul class="features-list">
+                <li><strong>Real-Time Tracking:</strong> The app continuously scans the environment, using advanced AI to detect and track Lantern Flies in real-time.</li>
+                <li><strong>YOLO Object Detection:</strong> Leveraging YOLO (You Only Look Once) object detection technology, the app is capable of recognizing individual flies with unparalleled speed and accuracy.</li>
+                <li><strong>Laser Precision:</strong> Once detected, the app’s laser system is triggered to target and eliminate the fly with minimal disruption to the surrounding ecosystem.</li>
+                <li><strong>Environmentally Friendly:</strong> Unlike chemical alternatives, our laser-based solution is environmentally safe, leaving no harmful residues behind.</li>
+                <li><strong>User-Friendly Interface:</strong> With an intuitive interface, users can easily monitor the system, track fly populations, and customize the app’s settings to suit their specific needs.</li>
+            </ul>
+        </section>
+
+        <div class="parallax parallax2"></div>
+
+        <section id="technology">
+            <h2>The Technology Behind the App</h2>
+            <p>Built on the latest advancements in AI and machine learning, our app uses neural networks trained on vast datasets to identify and track Lantern Flies with remarkable precision. The laser system is integrated seamlessly, ensuring that every fly detected is neutralized with zero harm to the environment.</p>
+            <h3>Training the Model</h3>
+            <p>The YOLO model was trained on a diverse set of images, allowing the system to identify Lantern Flies from different angles and in various lighting conditions.</p>
+            <h3>System Integration</h3>
+            <p>Our technology integrates AI-powered tracking, laser control, and environmental awareness, ensuring the system operates autonomously while remaining highly accurate.</p>
+        </section>
+
+        <section id="impact">
+            <h2>Impact on the Environment</h2>
+            <p>Lantern Flies are invasive pests that damage crops, trees, and the local ecosystem. By using our AI-powered solution, farmers, homeowners, and conservationists can proactively manage and eliminate Lantern Fly populations, restoring health to local ecosystems without relying on harmful chemicals.</p>
+        </section>
+
+        <div class="parallax parallax3"></div>
+
+        <section id="how-it-works">
+            <h2>How It Works</h2>
+            <ol class="steps-list">
+                <li><strong>Step 1:</strong> The app continuously monitors a specified area for Lantern Fly movement.</li>
+                <li><strong>Step 2:</strong> When a fly is detected, the AI instantly identifies and tracks its movement.</li>
+                <li><strong>Step 3:</strong> The system activates the laser mechanism, locking onto the fly with surgical precision.</li>
+                <li><strong>Step 4:</strong> The fly is neutralized, and the system moves on to the next target.</li>
+            </ol>
+        </section>
+
+        <section id="benefits">
+            <h2>Benefits</h2>
+            <ul class="benefits-list">
+                <li><strong>Efficiency:</strong> The app works around the clock to keep Lantern Fly populations in check without requiring manual intervention.</li>
+                <li><strong>Cost-Effective:</strong> By reducing the need for chemical pesticides, the app provides a long-term, cost-effective solution for managing pests.</li>
+                <li><strong>Eco-Friendly:</strong> Our app reduces environmental impact, ensuring that the ecosystem is not harmed in the process.</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
         <p>
-            Our AI app is designed to help control the Lantern Fly population. Using YOLO-trained weights, 
-            the app tracks the flies in real-time and utilizes cutting-edge technology to target and disintegrate 
-            them with a laser. This app offers an innovative approach to controlling this invasive species, 
-            using artificial intelligence for fast, precise pest control.
+            <a href="#">Twitter</a> | <a href="#">Facebook</a> | <a href="#">Instagram</a> | <a href="#">Contact Us</a>
         </p>
-    </div>
+        <div class="newsletter">
+            Stay updated: <a href="#">Sign up for our newsletter</a>
+        </div>
+        <p><small>Privacy Policy | Terms of Use</small></p>
+    </footer>
 
-    <!-- JavaScript -->
     <script>
-        document.getElementById('learn-more-btn').addEventListener('click', function() {
-            // Toggle the visibility of the hidden info section
-            const moreInfo = document.getElementById('more-info');
-            moreInfo.style.display = moreInfo.style.display === 'block' ? 'none' : 'block';
+        // Smooth scrolling for Learn More button (already handled by scroll-behavior: smooth)
+
+        // Fade-in animations on scroll
+        const sections = document.querySelectorAll('section');
+        const options = {
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, options);
+
+        sections.forEach(section => {
+            observer.observe(section);
         });
     </script>
-
 </body>
 </html>
