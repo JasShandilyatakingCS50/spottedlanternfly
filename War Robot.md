@@ -6,34 +6,21 @@ All offsets from `dump.cs` (ARM64). Format: Component, Return Type, Method Name,
 
 ## 🏃 Category: Speed
 
-### Speed Hack (AnimatorStateInfo)
-* **Component:** `UnityEngine.AnimatorStateInfo`
-* **Method:** `float get_speedMultiplier(void* instance)`
-* **Offset:** `0x4CE7640` | **RVA:** `0x4CE8240`
 
 ### Speed (MechStats)
 * **Component:** `Game.Stats.MechStats`
 * **Method:** `float get_Speed(void* instance)`
-* **Offset:** `0x241E730` | **RVA:** `0x241F330`
+* **Offset:** `0x87AA10` | **RVA:** `0x87B610`
 
 ### SpeedFactor (AnimMotion)
 * **Component:** `Game.MechMotion.AnimMotion`
 * **Method:** `float get_SpeedFactor(void* instance)`
-* **Offset:** `0x1054D20` | **RVA:** `0x1055920`
+* **Offset:** `0x997840` | **RVA:** `0x998440`
 
 ### Speed Stacked Multiplier
 * **Component:** `Game.Stats.MechStats`
 * **Method:** `float get_SpeedStackedMult(void* instance)`
 * **Offset:** `0xE970D0` | **RVA:** `0xE97CD0`
-
----
-
-## 🚀 Category: No Gravity
-
-### Gravity Scale (Rigidbody2D)
-* **Component:** `UnityEngine.Rigidbody2D`
-* **Method:** `float get_gravityScale(void* instance)`
-* **Offset:** `0x4DB3AB0` | **RVA:** `0x4DB46B0`
 
 ---
 
@@ -45,8 +32,8 @@ All offsets from `dump.cs` (ARM64). Format: Component, Return Type, Method Name,
     * `_jumpVertImpulse` — field offset `0x28` (float) — vertical jump force
     * `_jumpHorizImpulse` — field offset `0x2C` (float) — horizontal jump force
 * **Methods:**
-    * `void Jump()` — **Offset:** `0x86D080` | **RVA:** `0x86DC80`
-    * `bool get_CanJump()` — **Offset:** `0x86D470` | **RVA:** `0x86E070`
+* `Jump()` — **Offset:** `0xB00110` | **RVA:** `0xB00D10`
+* `get_CanJump()` — **Offset:** `0x86D470` | **RVA:** `0x86E070`
 
 > **Usage:** Patch `_jumpVertImpulse` field to a huge value (e.g., 9999) for super jump, or to 0 to disable jumping. Hook `get_CanJump` to return `false` to prevent jump entirely.
 
@@ -99,7 +86,7 @@ All powered by `NetworkAbilityCustomizable` (Game.Abilities):
 
 ### ChangeState (private, for force-transitioning)
 * **Method:** `void ChangeState(void* instance, int newState)`
-* **Offset:** `0xF356D0` | **RVA:** `0xF362D0`
+* **Offset:** `0x126F920` | **RVA:** `0x1270520`
 
 ### SetPressedState (simulate button press / release)
 * **Method:** `void SetPressedState(void* instance, bool isPressed)`
@@ -114,9 +101,9 @@ All powered by `NetworkAbilityCustomizable` (Game.Abilities):
 
 ### Force Disable — Force ability into deactivated state
 Call on `AbilityState`:
-* `void Activate()` — **Offset:** `0xF32FF0` | **RVA:** `0xF33BF0`
-* `void Deactivate()` — **Offset:** `0xF33090` | **RVA:** `0xF33C90`
-* `void Stop()` — **Offset:** `0xF33280` | **RVA:** `0xF33E80`
+* `Activate()` — **Offset:** `0x3D32C40` | **RVA:** `0x3D33840`
+* `Deactivate()` — **Offset:** `0x8ECD80` | **RVA:** `0x8ED980`
+* `Stop()` — **Offset:** `0x4D0A000` | **RVA:** `0x4D0AC00`
 
 > **Force Disable:** Call `Deactivate()` then `Stop()` on the active state to force-cancel the ability.
 > **Force Status Effects without Ability:** Call `Activate()` on a particular state index to trigger its associated AbilityComponents (which apply StatusEffects) without going through the normal flow.
@@ -141,6 +128,9 @@ Call on `AbilityState`:
 * **Offset:** `0xE9B260` | **RVA:** `0xE9BE60`
 * **Hook:** Return `false` → module is never locked by status effects.
 
+### _ignoreLockBy flag (NetworkAbilityCustomizable)
+* **Field Offset:** `0x88` — type `NetworkAbilityCustomizable.IgnoreLockByFlag`
+* Patching this field directly can bypass specific lock conditions.
 
 ---
 
@@ -167,7 +157,7 @@ Call on `AbilityState`:
 ### Auto Fire — Shot Interval Multiplier
 * **Component:** `Game.Stats.EquipmentStatsAggregationHelper`
 * **Method:** `float get_ShotIntervalMultiplier(void* instance)`
-* **Offset:** `0x4CE3FD4` | **RVA:** `0x4CE7FD4`
+* **Offset:** `0xE972B0` | **RVA:** `0xE97EB0`
 
 ### No Sleep Shots — Burst Interval (field patches)
 
@@ -188,7 +178,20 @@ Call on `AbilityState`:
 
 ### Weapon Range 1100m
 * **Method:** `float get_RangeMultiplier(void* instance)`
-* **Offset:** `0x4DA61F0` | **RVA:** `0x4DA6DF0`
+* **Offset:** `0xE97230` | **RVA:** `0xE97E30`
+
+### AoE Explosion Radius (increases explosion area — also extends some weapon ranges)
+* **Component:** `Game.Stats.EquipmentStatsAggregationHelper`
+* **Method:** `float get_AoeRadiusMultiplier(void* instance)`
+* **Offset:** `0xE96EF0` | **RVA:** `0xE97AF0`
+
+### Splash / Radial Damage (increases splash damage value — affects BOTH player and enemy)
+* **Component:** `Game.Weapon.ShootingWeapon` (IShootingWeapon interface)
+* `get_RadialDamage()` — **Offset:** `0x90C490` | **RVA:** `0x90D090`
+* `set_RadialDamage()` — **Offset:** `0x90C8E0` | **RVA:** `0x90D4E0`
+* **Field:** `_radialDamage` at `0x170` on ShootingWeapon instance
+
+> ⚠️ **WARNING:** `RadialDamage` affects ALL ShootingWeapon instances globally — this includes enemy weapons too! `AoeRadiusMultiplier` only modifies explosion radius via the stat system and is safer.
 
 ### No Ammo Reload Lite
 * **Method:** `float get_ReloadAccelerationMultiplier(void* instance)`
@@ -219,7 +222,7 @@ Call on `AbilityState`:
 ### StatusEffectTarget.HasEffect (main hook)
 * **Component:** `Game.Match.StatusEffectTarget`
 * **Method:** `bool HasEffect(void* instance, int effectKind)`
-* **Offset:** `0xFD7410` | **RVA:** `0xFD8010`
+* **Offset:** `0x1255AB0` | **RVA:** `0x12566B0`
 
 **EffectKind Constants:**
 | Effect | ID | Immune ID |
@@ -244,14 +247,14 @@ Call on `AbilityState`:
 
 ### CanMove (AnimMotion) — Anti-LockDown alternative
 * **Method:** `bool get_CanMove(void* instance)`
-* **Offset:** `0x1054C90` | **RVA:** `0x1055890`
+* **Offset:** `0x997690` | **RVA:** `0x998290`
 * **Hook:** Return `true` → always movable.
 
 ---
 
 ## 🤖 Category: Force Drone Status Effects
 
-Use the same `HasEffect` hook at RVA `0xFD8010` but return `true` for desired `EffectKind` values to force drone effects as if active.
+Use the same `HasEffect` hook at RVA `0x49454FC` but return `true` for desired `EffectKind` values to force drone effects as if active.
 
 Relevant EffectKind values:
 | Effect | ID |
@@ -267,7 +270,7 @@ Relevant EffectKind values:
 Force the ability's status effects without activating the ability. Two approaches:
 
 **Approach 1 — State Machine:** Call `AbilityState.Activate()` at RVA `0x4D8BB98` on a specific state to trigger its `AbilityComponent[]` (which apply StatusEffects) without using the full flow.
-** 	protected AbilityComponent[] _components; // 0x28 **
+
 **Approach 2 — HasEffect return `true`:** For specific EffectKind values:
 | Effect | ID |
 |---|---|
@@ -282,7 +285,7 @@ Force the ability's status effects without activating the ability. Two approache
 | Invisibility | `372` |
 
 ### Force Disable
-Rapidly cycle `Deactivate()` (RVA `0xF33C90`) → `Stop()` (RVA `0xF33E80`) on the active state to interrupt and force-cancel. This effectively stacks interruption on abilities that have multi-phase states, causing forced deactivation.
+Rapidly cycle `Deactivate()` (RVA `0x4D8BC08`) → `Stop()` (RVA `0x4D8BC78`) on the active state to interrupt and force-cancel. This effectively stacks interruption on abilities that have multi-phase states, causing forced deactivation.
 
 ---
 
@@ -291,31 +294,33 @@ Rapidly cycle `Deactivate()` (RVA `0xF33C90`) → `Stop()` (RVA `0xF33E80`) on t
 ### TeleportationService.StartTransition — Beacon Teleport
 * **Component:** `Game.Match.Services.TeleportationService`
 * **Method:** `bool StartTransition(void* instance, void* actor, int targetObjectId)`
-* **Offset:** `0xFFE270` | **RVA:** `0xFFEE70`
+* **Offset:** `0x4F9B300` | **RVA:** `0x4F9BF00`
 
 ### TeleportationService.CancelTransition
 * **Method:** `bool CancelTransition(void* instance, void* actor, int targetObjectId)`
-* **Offset:** `0xFFDDE0` | **RVA:** `0xFFE9E0`
+* **Offset:** `0x12756C0` | **RVA:** `0x12762C0`
 
 ### HandleTeleportation (direct)
 * **Component:** `Game.Match.Services.StaticTeleportManager`
 * **Method:** `void HandleTeleportation(void* instance, void* actor, void* entry, int exitIndex, bool isLocal)`
-* **Offset:** `0x4E28A9C` | **RVA:** `0x4E2CA9C`
+* **Offset:** `0xFFB810` | **RVA:** `0xFFC410`
 
 ### HandleTeleportationDebug (force any exit point)
 * **Method:** `void HandleTeleportationDebug(void* instance, void* actor, void* exit, void* point)`
 * **Offset:** `0xFFB690` | **RVA:** `0xFFC290`
 
-**Teleport-to-Player Modes (1 choice):**
-
-1. **Closest player:** Enumerate actors, find nearest → use its position.
+**Teleport-to-Player Modes (3 choices):**
+These modes likely work at a higher level by overriding the `targetObjectId` parameter:
+1. **Crosshair target:** Get the aimed-at actor from `ITargetController` → use its position as teleport destination.
+2. **Manual lock-on target:** Get the locked-on actor → use its position.
+3. **Closest player:** Enumerate actors, find nearest → use its position.
 
 All 3 ultimately call `Transform.set_position` to place the player at the target.
 
 ### Transform Position (for raw position override)
 * **Component:** `UnityEngine.Transform`
-* **Getter:** `Vector3 get_position()` — **Offset:** `0x4D3EF70` | **RVA:** `0x4D3FB70`
-* **Setter:** `void set_position(Vector3)` — **Offset:** `0x4D3F7C0` | **RVA:** `0x4D403C0`
+* `get_position()` — **Offset:** `0x31F22F0` | **RVA:** `0x31F2EF0`
+* `set_position()` — **Offset:** `0x4D3F7C0` | **RVA:** `0x4D403C0`
 
 ---
 
@@ -324,16 +329,45 @@ All 3 ultimately call `Transform.set_position` to place the player at the target
 Uses `Transform.set_position` (above) to set the player's Y coordinate to a negative offset below their current position (or below a teleported-to player's position).
 
 **Implementation:** Hook `Transform.set_position` or call it directly:
-1. Get current position via `get_position()` at RVA `0x4D3FB70`
-2. Subtract desired depth from `Y` component (e.g., 40m to 5000m) DO NOT OVERWRITE The Y, INSTEAD JUST SUBSTRACT, OR IT WILL BREAK THE GAME.
-3. Set with `set_position()` at RVA `0x4D403C0`
+1. Get current position via `get_position()` at RVA `0x9A83CDC`
+2. Subtract desired depth from `Y` component (e.g., 40m to 5000m)
+3. Set with `set_position()` at RVA `0x9A83D7C`
 
 > The underground serve works by continuously forcing the Y position below the ground plane. The player walks normally but is rendered underground.
 
 ---
 
+## ⏰ Category: Match — Time Jump
 
+### Match Start Time
+* **Component:** `Game.Match.Services.MatchTimeService`
+* `get_MatchStartTime()` — **Offset:** `0x8FB5C0` | **RVA:** `0x8FC1C0`
+* `set_MatchStartTime()` — **Offset:** `0xB0A170` | **RVA:** `0xB0AD70`
 
+### Max Match Duration
+* `get_MaxMatchDuration()` — **Offset:** `0x875160` | **RVA:** `0x875D60`
+* `set_MaxMatchDuration()` — **Offset:** `0xA75710` | **RVA:** `0xA76310`
+
+---
+
+## 👤 Category: Pilot Effects
+
+### PilotEffect1 Enable
+* **Component:** `Game.Stats.MechStats`
+* **Method:** `bool get_PilotEffectFeature1Enabled(void* instance)`
+* **Offset:** `0xE9B2A0` | **RVA:** `0xE9BEA0`
+
+### PilotEffect2 Enable
+* **Method:** `bool get_PilotEffectFeature2Enabled(void* instance)`
+* **Offset:** `0xE9B2C0` | **RVA:** `0xE9BEC0`
+
+---
+
+## 📺 Category: Ads — Skip Ads
+
+### RewardedAds
+* **Component:** `XMediator.Api.RewardedAds` (TypeDefIndex: 31754)
+* Ads via `AndroidRewardedAdsProxy`. Hook `OnRewardGranted` callback to fire immediately.
 
 ---
 
@@ -353,11 +387,11 @@ Uses `Transform.set_position` (above) to set the player's Y coordinate to a nega
 
 ### HP Energy Shields
 * **Method:** `float get_HpEnergyShields(void* instance)`
-* **Offset:** `0xE97170` | **RVA:** `0xE97D70`
+* **Offset:** `0xE97150` | **RVA:** `0xE97D50`
 
 ### Additional Ability1/2 Charges
-* `int get_AdditionalAbility1Charges()` — **RVA:** `0xE9BE00`
-* `int get_AdditionalAbility2Charges()` — **RVA:** `0xE9BE20`
+* `get_AdditionalAbility1Charges()` — **Offset:** `0xE9B200` | **RVA:** `0xE9BE00`
+* `get_AdditionalAbility2Charges()` — **Offset:** `0xE9B220` | **RVA:** `0xE9BE20`
 
 ### Module Price (free modules)
 * **Method:** `float get_ModulePrice(void* instance)`
@@ -369,7 +403,7 @@ Uses `Transform.set_position` (above) to set the player's Y coordinate to a nega
 
 ### Damage By Distance Multipliers
 * `get_DamageByDistanceMinMultiplier` — **RVA:** `0xE97BB0`
-* `get_DamageByDistanceMaxMultiplier` — **RVA:** `0xE97BB0`
+* `get_DamageByDistanceMaxMultiplier` — **RVA:** `0xE97B90`
 
 ### AntiStealth Radius Helper
 * **Component:** `WarRobots.Gameplay.StatusEffects.AntiStealthEffectHelper`
@@ -383,14 +417,25 @@ Uses `Transform.set_position` (above) to set the player's Y coordinate to a nega
 * **Hook:** Return `true` → target always aimable regardless of stealth.
 
 ### ShotInterval getter/setter (IShootingWeapon)
-* **Getter:** `float get_ShotInterval()` — **RVA:** `0x90D0B0`
-* **Setter:** `void set_ShotInterval(float)` — **RVA:** `0x90D690`
+* `get_ShotInterval()` — **Offset:** `0x90C4B0` | **RVA:** `0x90D0B0`
+* `set_ShotInterval()` — **Offset:** `0x90CA90` | **RVA:** `0x90D690`
 
 ### ScheduleShots (force shoot)
-* **Method:** `void ScheduleShots(void* instance, int count)` — **RVA:** `0x90CE70`
+* `ScheduleShots()` — **Offset:** `0x90F180` | **RVA:** `0x90FD80`
 
 ---
 
+## ⚡ Category: Titan Charge (Instant Titan Deploy)
+
+### TitanChargeService
+* **Component:** `Game.Match.Services.TitanChargeService` (TypeDefIndex: 7287)
+* `get_TitanCharge()` — **Offset:** `0x8FB590` | **RVA:** `0x8FC190`
+* `set_TitanCharge()` — **Offset:** `0x7FCD650` | **RVA:** `0x829BC50`
+* `get_Charged()` — **Offset:** `0x7FCCFD0` | **RVA:** `0x829B5D0`
+* **Field:** `_charge` at `0x10` (float, 0.0–1.0, `1.0` = fully charged)
+
+> **Instant Titan:** Set `TitanCharge` to `1.0f` → titan is immediately deployable.
+> **Lock Titan (for enemy):** If you can get an enemy's service instance, set charge to `0.0f`.
 
 ---
 
@@ -401,17 +446,17 @@ Uses `Transform.set_position` (above) to set the player's Y coordinate to a nega
 
 | Property | Getter RVA | Setter RVA | Type |
 |---|---|---|---|
-| `Hp` | `0x103CD90` | `0x103D660` (private) | float |
-| `MaxHp` | `0x103CDC0` | `0x103D690` | float |
-| `HpNormalized` | `0x103CD70` | — | float |
-| `HealLimit` | `0x103CD60` | `0x103D5A0` | float |
-| `HealScale` | `0x9466A0` | `0x945AA0` | float |
+| `Hp` | `0x4E87B2C` | `0x4E87B38` (private) | float |
+| `MaxHp` | `0x4E87888` | `0x4E87894` | float |
+| `HpNormalized` | `0x4E87BA4` | — | float |
+| `HealLimit` | `0x4E87AD4` | `0x4E87AE0` | float |
+| `HealScale` | `0x4E87CD4` | `0x4E87CDC` | float |
 | `DamageScale` | `0x4E87CC4` | `0x4E87CCC` | float |
-| `IsDestructed` | `0x103CDA0` | — | bool |
-| `IsRecoverable` | `0x7A2B90` | — | bool |
-| `ArmorPoints` | `0x103CC90` | — | float |
-| `IsShield` | `0x8794A0` | — | bool |
-| `BlocksAoeDamage` | `0x103CCD0` | `0x103D510` | bool |
+| `IsDestructed` | `0x4E87BC8` | — | bool |
+| `IsRecoverable` | `0x4E87880` | — | bool |
+| `ArmorPoints` | `0x4E87B68` | — | float |
+| `IsShield` | `0x4E87CA0` | — | bool |
+| `BlocksAoeDamage` | `0x4E87CA8` | `0x4E87CB0` | bool |
 
 **Advanced HP hacks:**
 * **Infinite HP:** Hook `get_Hp` to always return `get_MaxHp` value.
@@ -425,6 +470,25 @@ Uses `Transform.set_position` (above) to set the player's Y coordinate to a nega
 
 ---
 
+## 🔫 Category: Weapon Damage Manipulation
+
+### WeaponBase — Direct Damage
+* **Component:** `Game.Weapon.WeaponBase` (TypeDefIndex: 6953)
+
+| Property | Getter RVA | Setter RVA |
+|---|---|---|
+| `Damage` (float) | `0x4DB87E4` | `0x4DB87EC` (protected) |
+| `InternalDamageMultiplier` (float) | `0x4DB87F4` | `0x4DB87FC` |
+| `DamageResistPenetration` (float) | `0x4DB8804` | — |
+| `WeaponCollisionFlags` | `0x4DB888C` | `0x4DB8894` |
+| `DamageLayerMask` | `0x4DB88A8` | — |
+| `CollisionLayerMask` | `0x4DB89E8` | — |
+
+* **Field:** `_damage` at `0x40`, `_internalDamageMultiplier` at `0xA4`
+
+> **Damage Multiplier:** Hook `get_InternalDamageMultiplier` to return a huge value (e.g., 999.0) → all weapon hits deal massively amplified damage.
+> **Full Armor Penetration:** Hook `get_DamageResistPenetration` to return `1.0f` → ignore all enemy damage resist.
+> **Wall Collision Bypass:** Modify `WeaponCollisionFlags` or `CollisionLayerMask` to remove environment layers → shots pass through walls.
 
 ---
 
@@ -435,11 +499,11 @@ Uses `Transform.set_position` (above) to set the player's Y coordinate to a nega
 
 | Property | RVA | Type |
 |---|---|---|
-| `get_isGrounded` | `0x8794A0` | bool |
-| `set_isGrounded` (private) | `0x879560` | bool |
-| `get_isLanding` | `0x8794B0` | bool |
-| `GetMechAltitude(out RaycastHit)` | `0x878C10` | float |
-| `get_rigidbody` | `0x7A0DC0` | Rigidbody |
+| `get_isGrounded` | `0x46D179C` | bool |
+| `set_isGrounded` (private) | `0x46D17A4` | bool |
+| `get_isLanding` | `0x46D1A00` | bool |
+| `GetMechAltitude(out RaycastHit)` | `0x46D1AEC` | float |
+| `get_rigidbody` | `0x46D178C` | Rigidbody |
 
 > **Permanent Float/Fly:** Hook `get_isGrounded` to return `false` + manipulate rigidbody velocity.
 > **Forced Ground (anti-fly):** Hook `get_isGrounded` to return `true` always.
@@ -730,7 +794,7 @@ StatusEffect {
 
 ### Vector 2: `StatusEffectsTarget.AddEffect(StatusEffect)` — Local Effect Injection
 * **Component:** `Game.Match.StatusEffectsTarget` (TypeDefIndex: 7228)
-* **Method:** `void AddEffect(StatusEffect effect)` — **RVA:** `0x4E11808`
+* `AddEffect()` — **Offset:** `0x106A960` | **RVA:** `0x106B560`
 * **StatusEffectShieldController** watches for `EffectAdded` events → if `Kind == EnergyShield (74)`, it creates an `EnergyShieldSource` and attaches it to the `EnergyShieldOwner`.
 
 **How it works:**
@@ -759,7 +823,7 @@ StatusEffect {
 
 ## The `StatusEffectsService.Request` Path (Client→Server Effect Request)
 
-* **Method:** `void Request(IActor source, EffectKind effectKind, IEnumerable<IAimTarget> targets)` — **RVA:** `0x50BD048`
+* `Request()` — **Offset:** `0x4D44570` | **RVA:** `0x4D45170`
 * This calls `IStatusEffectsClient.Request()` which is implemented by `RpcStatusEffectClient` (sends to server) or `WorldStateStatusEffectsClient`
 
 > **⚠️ HIGH PRIORITY INVESTIGATION:** This method allows the client to REQUEST that an effect of ANY `EffectKind` be applied to specific targets. If the server doesn't validate that the source actor is authorized to apply that effect, this is a **universal effect injection** vulnerability — reflector, counterblind, countersuppression, or any other effect on any bot.
@@ -804,7 +868,7 @@ StatusEffect {
 ## Frontier 1: `RpcStatusEffectClient.Request()` — Server Validation Gap ⭐ CRITICAL
 
 **Component:** `WarRobots.Core.StatusEffects.RpcStatusEffectClient` (TypeDefIndex: 9953)
-**Method:** `void Request(IActor source, EffectKind effectKind, IEnumerable<IAimTarget> targets)` — **RVA:** `0x50BB048`
+* `Request()` — **Offset:** `0x4D44570` | **RVA:** `0x4D45170`
 
 **Fields:**
 | Field | Offset | Type |
@@ -898,7 +962,7 @@ This field at offset `0x30` determines which effect is requested when the abilit
 | `towerSpeedMutator` | `0x58` | Turret speed modification type |
 | `_towerSpeedMutatorValue` | `0x60` | Turret speed modification amount |
 
-**Injection method:** `BaseMutatorComponent.InjectController(MutatorsController)` — **RVA:** `0x4D2FD44`
+* `InjectController()` — **Offset:** `0xEE1910` | **RVA:** `0xEE2510`
 
 **🚨 Exploit — External Mutator Injection:**
 1. Get your Mech's `MutatorsController` via `IHas<MutatorsController>`
@@ -915,7 +979,7 @@ This field at offset `0x30` determines which effect is requested when the abilit
 - Field: `_throttlers` at `0x10` — `Dictionary<ViewId, WorldStateEventThrottler<EffectRequest>>`
 - Field: `_useThrottler` at `0x18` — bool
 
-**Method:** `void Request(IActor source, EffectKind effectKind, IEnumerable<IAimTarget> targets)` — **RVA:** `0x50BD204`
+* `Request()` — **Offset:** `0x4D44570` | **RVA:** `0x4D45170`
 
 This is an alternative path to `RpcStatusEffectClient`. Instead of sending RPCs, it writes `EffectRequest` structs to the world state sync buffer. The world state system batches these and sends them to the server.
 
@@ -979,12 +1043,12 @@ By sending `AbilitySourceKind = 0 (None)`, the server might skip validation enti
 | `_supportedEffectKinds` | `0x18` | HashSet\<EffectKind\> — which effects this drone supports |
 
 **Methods:**
-- `get_DroneAbilities()` — **RVA:** `0x475A164`
-- `ContainsEffectKind(EffectKind)` — **RVA:** `0x475A164`
+* `get_DroneAbilities()` — **Offset:** `0x786BC0` | **RVA:** `0x7877C0`
+* `ContainsEffectKind()` — **Offset:** `0x8F5A10` | **RVA:** `0x8F6610`
 
 **`DroneShieldSourceActivator`** (TypeDefIndex: 12006):
 - Creates `EnergyShieldSourceComponent` entries per drone
-- `Init(Drone)` — **RVA:** `0x475A1BC`
+* `Init()` — **Offset:** `0x4A8DF80` | **RVA:** `0x4A8EB80`
 - `_shieldSources` at `0x18` — List of shield sources
 
 **🚨 Exploit — Drone Effect Bypass:**
@@ -1012,10 +1076,10 @@ The `DroneShieldSourceActivator` creates shield sources based on drone state. If
 | `_statusEffectTarget` | `0x30` | IStatusEffectTarget | The mech's effect target |
 
 **Methods:**
-- `Init(WeaponBase)` — **RVA:** `0x473A508`
-- `OnEffectAdded(StatusEffect)` — **RVA:** `0x473AABC`
-- `OnEffectRemoved(StatusEffect)` — **RVA:** `0x473A998`
-- `UpdateStatusEffectTarget()` — **RVA:** `0x473A5D4`
+* `Init()` — **Offset:** `0x4A8DF80` | **RVA:** `0x4A8EB80`
+* `OnEffectAdded()` — **Offset:** `0x918BE0` | **RVA:** `0x9197E0`
+* `OnEffectRemoved()` — **Offset:** `0x918CD0` | **RVA:** `0x9198D0`
+* `UpdateStatusEffectTarget()` — **Offset:** `0x7473020` | **RVA:** `0x7741620`
 
 **Combined with `StatusEffectSource.PushEffects(EffectKind[])`** (RVA `0x4E0EE14`):
 
